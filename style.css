@@ -1,0 +1,132 @@
+/* 
+    Document   : style
+    Created on : 25 Jul, 2013, 3:24:33 AM
+    Author     : pro2xy
+    Description:
+        Purpose of the stylesheet follows.
+*/
+@viewport{
+    width: device-width;
+}
+@-ms-viewport{
+    width: device-width;
+}
+root { 
+    display: block;
+}
+body {
+/*    background: url("images/bg1.jpg");
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: contain;*/
+
+    background: url("images/bg2.jpg");
+    background-repeat: repeat;
+
+}
+@media only screen and (max-width: 399px)
+{
+    #wrapper{
+        width: 100%;
+        border-radius: 2%;
+    }
+    
+    #login_center{
+        
+    }
+    
+    table#control{
+    margin: auto;
+    box-shadow: 0 0 0.5em 0 rgba(0,0,0,0.5); 
+    border-radius: 0.4em;
+    }
+}
+@media only screen and (min-width: 400px) and (max-width: 699px)
+{
+    #wrapper{
+        width: 96%;
+        border-radius: 2%;
+    }
+    
+    #login_center{
+        
+        width: 18em;
+        margin: auto;
+    }
+    
+    table#control{
+    margin: auto;
+    box-shadow: 0 0 0.8em 0 rgba(0,0,0,0.5);
+    border-radius: 0.2em;
+    }
+}
+@media only screen and (min-width: 700px)
+{
+    #wrapper{
+        width: 75%;
+        font-size: 130%;
+        border-radius: 0.5%;
+    }
+    
+    #login_center{
+        width: 15em;
+        margin: auto;
+    }
+    table#control{
+    margin: auto;
+    width: 20em;
+    box-shadow: 0 0 0.8em 0 rgba(0,0,0,0.5);
+    border-radius: 0.2em;
+    }
+}
+
+#wrapper{
+    background: rgba(255,255,255,0.7);
+    margin: auto;
+    box-shadow: 0 0 3em 0 rgba(0,0,0,0.5);
+
+    
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+    padding: 3%;
+}
+
+#error{
+    background: rgba(255,0,0,0.65);
+    width:auto;
+    margin: 1em auto;
+    padding: 1em;
+    text-align: center;
+    border: solid;
+    border-width: 1px;
+    border-radius: 0.5em;
+    box-shadow: 0 0 1em 0 rgba(255,255,0,0.65);
+}
+#msg{
+    background: rgba(0,255,0,0.65);
+    width:auto;
+    margin: 1em auto;
+    padding: 1em;
+    text-align: center;
+    border: solid;
+    border-width: 1px;
+    border-radius: 0.5em;
+    box-shadow: 0 0 1em 0 rgba(255,255,0,0.65);
+}
+
+table#control tr{
+    border: solid;
+    border-width: 1px;
+    border-color: black;
+}
+
+table#control{
+    background: rgba(255,255,255,0.5);
+    border-width: 1px;
+
+}
+#control_switch{
+    height: 60px;
+    width: 60px;
+}
