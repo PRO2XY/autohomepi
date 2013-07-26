@@ -36,39 +36,37 @@ if (isset($_POST['pswd_change'])) {
         header("Location:./?msg=pswdchangesuccess");
     }
 } else if (isset($_POST['formsendertype']) && ($_POST['formsendertype'] == "edit" || $_POST['formsendertype'] == "update_switch")) {   //edit button pressed
-    if ($_POST['formsendertype']=="update_switch") {
+    if ($_POST['formsendertype'] == "update_switch") {
         //get from $_POST ->: description, gpio, switch_id
         $switch_id_to_update = mysql_real_escape_string($_POST['switch_id']);
-        $newDescription = mysql_real_escape_string($_POST["description".$switch_id_to_update]);
-        $newGpio = mysql_real_escape_string($_POST["gpio".$switch_id_to_update]);
+        $newDescription = mysql_real_escape_string($_POST["description" . $switch_id_to_update]);
+        $newGpio = mysql_real_escape_string($_POST["gpio" . $switch_id_to_update]);
 
-        if(mysql_query("UPDATE `$dbname`.`switches` SET `switch_descr`='$newDescription',`switch_gpio`='$newGpio' WHERE `switch_id` = '$switch_id_to_update'") ) {
+        if (mysql_query("UPDATE `$dbname`.`switches` SET `switch_descr`='$newDescription',`switch_gpio`='$newGpio' WHERE `switch_id` = '$switch_id_to_update'")) {
             ?>
-<script type="text/javascript">
-    var messenger = document.getElementsByClassName("messenger");
-    messenger=messenger[0];
-    messenger.id="msg";
-    messenger.innerHTML = "Switch \"<?echo $switch_id_to_update+1;?>\" updated successfully!";
-    alert("Switch \"<?echo $switch_id_to_update+1;?>\" updated successfully!");
-</script>
-    <?
-        }
-        else {
+            <script type="text/javascript">
+                var messenger = document.getElementsByClassName("messenger");
+                messenger = messenger[0];
+                messenger.id = "msg";
+                messenger.innerHTML = "Switch \"<? echo $switch_id_to_update + 1; ?>\" updated successfully!";
+                alert("Switch \"<? echo $switch_id_to_update + 1; ?>\" updated successfully!");
+            </script>
+            <?
+        } else {
             ?>
-<script type="text/javascript">
-    var messenger = document.getElementsByClassName("messenger");
-    messenger=messenger[0];
-    messenger.id="error";
-    messenger.innerHTML = "Switch \"<?echo $switch_id_to_update+1;?>\" could not be updated!";
-    alert("Switch \"<?echo $switch_id_to_update+1;?>\" could not be updated!");
-</script>
-    <?
+            <script type="text/javascript">
+                var messenger = document.getElementsByClassName("messenger");
+                messenger = messenger[0];
+                messenger.id = "error";
+                messenger.innerHTML = "Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated!";
+                alert("Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated!");
+            </script>
+            <?
             die($errormsg);
         }
-        
     }
-    
-    
+
+
     $query = "SELECT * FROM `$dbname`.`switches`"; //fetch db for switches; switch_id, switch_state, switch_descr, switch_gpio
     $db_switch_result = mysql_query($query);
     $rows = mysql_num_rows($db_switch_result);
@@ -76,15 +74,18 @@ if (isset($_POST['pswd_change'])) {
     <form method="post" action="./" id="update_form">
         <input type="hidden" name="formsendertype" value="update_switch">
         <input type="hidden" name="switch_id" id="switchidtoupdate">
-        
+
         <table id="control">
             <caption> autoHomePi Control Panel Edit </caption>
             <thead>
                 <tr>
-                    <th><label>S.No.</label></th>
-                    <th><label>Switch</label></th>
-                    <th><label>Description</label></th>
-                    <th><label>RPi.GPIO</label></th>
+                    <th rowspan="2"><label>S.No.</label></th>
+                    <th rowspan="2"><label>Switch</label></th>
+                    <th colspan="2" id="description"><label>Description</label></th>
+                </tr>
+                <tr>
+                    <th id="gpio"><label>RPi.GPIO</label></th>
+                    <th id="update"><label>Update</label></th>
                 </tr>
             </thead>
             <tbody>
@@ -97,12 +98,14 @@ if (isset($_POST['pswd_change'])) {
                     $switch_gpio = $db_switch_data['switch_gpio'];
                     ?>
 
-                    <tr>
-                        <td><? echo $i + 1; ?></td>
-                        <td><img src="images/switch_<? echo $switch_state; //switch state     ?>.png" id="control_switch"></td>
-                        <td><input type="text" name="description<? echo $i; ?>" value="<? echo $switch_descr; ?>"></td>
-                        <td><input type="number" name="gpio<? echo $i; ?>" value="<? echo $switch_gpio; ?>"></td>
-                        <td><input type="button" name="<? echo $switch_id; ?>" value="Update" onclick="save_clickHandler(event);"></td>
+                    <tr align="center">
+                        <td rowspan="2"><? echo $i + 1; ?></td>
+                        <td rowspan="2"><img src="images/switch_<? echo $switch_state; //switch state        ?>.png" id="control_switch"></td>
+                        <td id="description" colspan="2"><input id="descriptionfield" type="text" name="description<? echo $i; ?>" value="<? echo $switch_descr; ?>"></td>
+                    </tr>
+                    <tr align="center">
+                        <td id="gpio"><input id="gpiofield" type="number" length="2" name="gpio<? echo $i; ?>" value="<? echo $switch_gpio; ?>"></td>
+                        <td id="update"><input type="button" name="<? echo $switch_id; ?>" value="Update" onclick="save_clickHandler(event);"></td>
                     </tr>
                 <? } ?>
                 <tr><td></td><td></td><td><a href="./"><-- Go back</a></td></tr>
@@ -149,10 +152,10 @@ if (isset($_POST['pswd_change'])) {
                     $switch_state = $db_switch_data['switch_state'];
                     $switch_descr = $db_switch_data['switch_descr'];
                     ?>
-                    <tr>
+                    <tr align="center">
                         <td><? echo $i + 1; ?></td>
-                        <td><input type="image" name="<? echo $i; ?>" value="Switch <? echo $i; ?>" src="images/switch_<? echo $switch_state; //switch state     ?>.png" id="control_switch" onclick="switch_clickHandler(event);"></td>
-                        <td><? echo "$switch_descr"; //description     ?></td>
+                        <td><input type="image" name="<? echo $i; ?>" value="Switch <? echo $i; ?>" src="images/switch_<? echo $switch_state; //switch state        ?>.png" id="control_switch" onclick="switch_clickHandler(event);"></td>
+                        <td><? echo "$switch_descr"; //description        ?></td>
                         <? if ($_SESSION['user_type'] == "admin") { ?><td><input type="button" name="<? echo $i; ?>" value="Edit" id="control_edit" onclick="edit_clickHandler(event);"></td><? } ?>
                     </tr>
                 <? } ?>
@@ -164,18 +167,18 @@ if (isset($_POST['pswd_change'])) {
 }
 ?>
 <script>
-                    function switch_clickHandler(event) {
-                        document.getElementById('sendertype').value = "switch";
-                        document.getElementById('senderid').value = event.target.name;
-                        document.getElementById('control_form').submit();
-                    }
-                    function edit_clickHandler(event) {
-                        document.getElementById('sendertype').value = "edit";
-                        document.getElementById('senderid').value = event.target.name;
-                        document.getElementById('control_form').submit();
-                    }
-                    function save_clickHandler(event) {
-                        document.getElementById('switchidtoupdate').value = event.target.name;
-                        document.getElementById('update_form').submit();
-                    }
+                function switch_clickHandler(event) {
+                    document.getElementById('sendertype').value = "switch";
+                    document.getElementById('senderid').value = event.target.name;
+                    document.getElementById('control_form').submit();
+                }
+                function edit_clickHandler(event) {
+                    document.getElementById('sendertype').value = "edit";
+                    document.getElementById('senderid').value = event.target.name;
+                    document.getElementById('control_form').submit();
+                }
+                function save_clickHandler(event) {
+                    document.getElementById('switchidtoupdate').value = event.target.name;
+                    document.getElementById('update_form').submit();
+                }
 </script>

@@ -40,6 +40,10 @@ body {
     box-shadow: 0 0 0.5em 0 rgba(0,0,0,0.5); 
     border-radius: 0.4em;
     }
+    
+    #editformgpio {
+        width: 5em;
+    }
 }
 @media only screen and (min-width: 400px) and (max-width: 699px)
 {
@@ -123,10 +127,19 @@ table#control tr{
 
 table#control{
     background: rgba(255,255,255,0.5);
-    border-width: 1px;
 
 }
 #control_switch{
     height: 60px;
     width: 60px;
+}
+#update_form #description{
+
+}
+
+#update_form #descriptionfield{
+    width: 98%;
+}
+#update_form #gpiofield{
+    width: 100%;
 }
