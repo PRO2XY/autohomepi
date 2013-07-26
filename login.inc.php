@@ -5,4 +5,8 @@
         <tr><td>Password:</td><td><input type="password" name="password" required></td></tr>
         <tr><td></td><td><input type="submit" name="Login" value="Login"></td></tr>
     </table>
+<<<<<<< HEAD
 </form>
+=======
+</form>
+>>>>>>> 1db88a3853b15b48ac6bb919ba13011b4a550af5

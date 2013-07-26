@@ -156,4 +156,8 @@ if (isset($_POST['pswd_change'])) {
                         document.getElementById('switchidtoupdate').value = event.target.name;
                         document.getElementById('update_form').submit();
                     }
+<<<<<<< HEAD
 </script>
+=======
+</script>
+>>>>>>> 1db88a3853b15b48ac6bb919ba13011b4a550af5
