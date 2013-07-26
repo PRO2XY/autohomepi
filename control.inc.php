@@ -42,8 +42,30 @@ if (isset($_POST['pswd_change'])) {
         $newDescription = mysql_real_escape_string($_POST["description".$switch_id_to_update]);
         $newGpio = mysql_real_escape_string($_POST["gpio".$switch_id_to_update]);
 
-        mysql_query("UPDATE `$dbname`.`switches` SET `switch_descr`='$newDescription',`switch_gpio`='$newGpio' WHERE `switch_id` = '$switch_id_to_update'") or die($errormsg);
-
+        if(mysql_query("UPDATE `$dbname`.`switches` SET `switch_descr`='$newDescription',`switch_gpio`='$newGpio' WHERE `switch_id` = '$switch_id_to_update'") ) {
+            ?>
+<script type="text/javascript">
+    var messenger = document.getElementsByClassName("messenger");
+    messenger=messenger[0];
+    messenger.id="msg";
+    messenger.innerHTML = "Switch \"<?echo $switch_id_to_update+1;?>\" updated successfully!";
+    alert("Switch \"<?echo $switch_id_to_update+1;?>\" updated successfully!");
+</script>
+    <?
+        }
+        else {
+            ?>
+<script type="text/javascript">
+    var messenger = document.getElementsByClassName("messenger");
+    messenger=messenger[0];
+    messenger.id="error";
+    messenger.innerHTML = "Switch \"<?echo $switch_id_to_update+1;?>\" could not be updated!";
+    alert("Switch \"<?echo $switch_id_to_update+1;?>\" could not be updated!");
+</script>
+    <?
+            die($errormsg);
+        }
+        
     }
     
     
@@ -156,8 +178,4 @@ if (isset($_POST['pswd_change'])) {
                         document.getElementById('switchidtoupdate').value = event.target.name;
                         document.getElementById('update_form').submit();
                     }
-<<<<<<< HEAD
 </script>
-=======
-</script>
->>>>>>> 1db88a3853b15b48ac6bb919ba13011b4a550af5

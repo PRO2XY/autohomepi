@@ -19,6 +19,7 @@ if(isset($_POST['logout']))
     </head>
     <body>
         <div id="wrapper">
+            <div class="messenger"></div>
             <?php
             if (isset($_GET['error'])) {
                 switch ($_GET['error']) {
