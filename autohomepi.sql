@@ -41,11 +41,11 @@ CREATE TABLE IF NOT EXISTS `switches` (
 --
 
 INSERT INTO `switches` (`switch_id`, `switch_state`, `switch_descr`, `switch_gpio`) VALUES
-(0, 'off', 'Sandas ka Lightwa', 11),
-(1, 'on', 'ACba', 12),
-(2, 'off', 'Balabwa', 13),
-(3, 'off', 'Tubewa', 15),
-(4, 'on', 'Pankhwa', 16);
+(0, 'off', 'Switch 1', 11),
+(1, 'on', 'Switch 2', 12),
+(2, 'off', 'Switch 3', 13),
+(3, 'off', 'Switch 4', 15),
+(4, 'on', 'Switch 5', 16);
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`uid`, `username`, `password`, `name`, `user_type`) VALUES
 (1, 'norm', '589275fdd4e5908f18310b56beaf439b', 'Normal User', 'normal'),
-(100, 'pranav', 'ae2b1fca515949e5d54fb22b8ed95575', 'Pranav', 'admin');
+(100, 'admin', 'ae2b1fca515949e5d54fb22b8ed95575', 'Admin User', 'admin');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
