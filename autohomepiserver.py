@@ -4,7 +4,10 @@
 # Version Date: 27-07-2013 00:32
 
 ### USER EDITABLES
-DATABASEUSERNAME = "root"
-DATABASEPASSWORD = "root"
+CONFIGFILE = "../../configforautohomepi"
 REFRESHTIME = 5 #seconds
 ### USER EDITABLES END
+DATABASEPASSWORD = ""
+import ../../configforautohomepi
+
+print (DATABASEPASSWORD)
