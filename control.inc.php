@@ -42,7 +42,7 @@ if (isset($_POST['pswd_change'])) {
         $newDescription = mysql_real_escape_string($_POST["description" . $switch_id_to_update]);
         $newGpio = mysql_real_escape_string($_POST["gpio" . $switch_id_to_update]);
         
-        if (!($newGpio == 11) || ($newGpio == 12) || ($newGpio == 13) || ($newGpio == 15) || ($newGpio == 16)) {
+        if (!(($newGpio == 11) || ($newGpio == 12) || ($newGpio == 13) || ($newGpio == 15) || ($newGpio == 16))) {
 //            header("Location:./?error=gpionotinrange");
             ?><script type="text/javascript">
                             var messenger = document.getElementsByClassName("messenger");
@@ -111,7 +111,7 @@ if (isset($_POST['pswd_change'])) {
 
                     <tr align="center">
                         <td rowspan="2"><? echo $i + 1; ?></td>
-                        <td rowspan="2"><img src="images/switch_<? echo $switch_state; //switch state        ?>.png" id="control_switch"></td>
+                        <td rowspan="2"><img src="images/switch_<? if($switch_descr=="disabled"||$switch_descr=="Disabled") echo 'disabled'; else echo $switch_state; //switch state ?>.png" id="control_switch"></td>
                         <td id="description" colspan="2"><input id="descriptionfield" type="text" name="description<? echo $i; ?>" value="<? echo $switch_descr; ?>"></td>
                     </tr>
                     <tr align="center">
@@ -120,6 +120,8 @@ if (isset($_POST['pswd_change'])) {
                     </tr>
     <? } ?>
                 <tr><td></td><td></td><td><a href="./"><-- Go back</a></td></tr>
+                <tr><td colspan='4' style='text-align: justify; padding: 2%;'>Valid GPIO pins - [11, 12, 13, 15, 16]</td></tr>
+                <tr><td colspan='4' style='text-align: justify; padding: 2%;'>To disable a switch, set description to Disabled</td></tr>
             </tbody>
         </table>
     </form>
@@ -165,7 +167,7 @@ if (isset($_POST['pswd_change'])) {
                         ?>
                     <tr align="center">
                         <td><? echo $i + 1; ?></td>
-                        <td><input type="image" name="<? echo $i; ?>" value="Switch <? echo $i; ?>" src="images/switch_<? echo $switch_state; //switch state        ?>.png" id="control_switch" onclick="switch_clickHandler(event);"></td>
+                        <td><input type="image" name="<? echo $i; ?>" value="Switch <? echo $i; ?>" src="images/switch_<? if($switch_descr=="disabled"||$switch_descr=="Disabled") echo 'disabled'; else echo $switch_state; //switch state ?>.png" id="control_switch" onclick="switch_clickHandler(event);"></td>
                         <td><? echo "$switch_descr"; //description        ?></td>
         <? if ($_SESSION['user_type'] == "admin") { ?><td><input type="button" name="<? echo $i; ?>" value="Edit" id="control_edit" onclick="edit_clickHandler(event);"></td><? } ?>
                     </tr>
