@@ -143,3 +143,13 @@ table#control{
 #update_form #gpiofield{
     width: 100%;
 }
+#update_form #disablebox{
+}
+
+#update_form #disabletext{
+    font-size: 100%;
+}
+input.disabled{
+    background: peachpuff;
+}
+

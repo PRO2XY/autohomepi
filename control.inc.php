@@ -41,44 +41,33 @@ if (isset($_POST['pswd_change'])) {
         $switch_id_to_update = mysql_real_escape_string($_POST['switch_id']);
         $newDescription = mysql_real_escape_string($_POST["description" . $switch_id_to_update]);
         $newGpio = mysql_real_escape_string($_POST["gpio" . $switch_id_to_update]);
-        
-        if (!(($newGpio == 11) || ($newGpio == 12) || ($newGpio == 13) || ($newGpio == 15) || ($newGpio == 16))) {
-//            header("Location:./?error=gpionotinrange");
-            ?><script type="text/javascript">
-                            var messenger = document.getElementsByClassName("messenger");
-                            messenger = messenger[0];
-                            messenger.id = "error";
-                            messenger.innerHTML = "Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated! GPIO '<? echo $newGpio ?>' not in range. Please enter a value between [11, 12, 13, 15, 16]";
-                            alert("Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated!");
+        $switchDisabled = isset($_POST["switch_disabled_" . $switch_id_to_update])?1:0;
+            
+        if (mysql_query("UPDATE `$dbname`.`switches` SET `switch_descr`='$newDescription',`switch_gpio`='$newGpio',`switch_disabled`=$switchDisabled WHERE `switch_id` = '$switch_id_to_update'")) {
+            ?>
+            <script type="text/javascript">
+                var messenger = document.getElementsByClassName("messenger");
+                messenger = messenger[0];
+                messenger.id = "msg";
+                messenger.innerHTML = "Switch \"<? echo $switch_id_to_update + 1; ?>\" updated successfully!";
+
             </script>
             <?
         } else {
-            if (mysql_query("UPDATE `$dbname`.`switches` SET `switch_descr`='$newDescription',`switch_gpio`='$newGpio' WHERE `switch_id` = '$switch_id_to_update'")) {
-                ?>
-                <script type="text/javascript">
-                    var messenger = document.getElementsByClassName("messenger");
-                    messenger = messenger[0];
-                    messenger.id = "msg";
-                    messenger.innerHTML = "Switch \"<? echo $switch_id_to_update + 1; ?>\" updated successfully!";
-
-                </script>
-                <?
-            } else {
-                ?>
-                <script type="text/javascript">
-                    var messenger = document.getElementsByClassName("messenger");
-                    messenger = messenger[0];
-                    messenger.id = "error";
-                    messenger.innerHTML = "Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated!";
-                    alert("Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated!");
-                </script>
-                <?
-            }
+            ?>
+            <script type="text/javascript">
+                var messenger = document.getElementsByClassName("messenger");
+                messenger = messenger[0];
+                messenger.id = "error";
+                messenger.innerHTML = "Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated!";
+                alert("Switch \"<? echo $switch_id_to_update + 1; ?>\" could not be updated!");
+            </script>
+            <?
         }
     }
 
 
-    $query = "SELECT * FROM `$dbname`.`switches`"; //fetch db for switches; switch_id, switch_state, switch_descr, switch_gpio
+    $query = "SELECT * FROM `$dbname`.`switches`"; //fetch db for switches; switch_id, switch_state, switch_descr, switch_gpio, switch_disabled
     $db_switch_result = mysql_query($query);
     $rows = mysql_num_rows($db_switch_result);
     ?>
@@ -92,7 +81,8 @@ if (isset($_POST['pswd_change'])) {
                 <tr>
                     <th rowspan="2"><label>S.No.</label></th>
                     <th rowspan="2"><label>Switch</label></th>
-                    <th colspan="2" id="description"><label>Description</label></th>
+                    <th colspan="3" id="description"><label>Description</label></th>
+                    <th rowspan="2" id="disable"><label>Disable</label></th>
                 </tr>
                 <tr>
                     <th id="gpio"><label>RPi.GPIO</label></th>
@@ -100,28 +90,44 @@ if (isset($_POST['pswd_change'])) {
                 </tr>
             </thead>
             <tbody>
-    <?
-    for ($i = 0; $i < $rows; $i++) {
-        $db_switch_data = mysql_fetch_assoc($db_switch_result);
-        $switch_id = $db_switch_data['switch_id'];
-        $switch_state = $db_switch_data['switch_state'];
-        $switch_descr = $db_switch_data['switch_descr'];
-        $switch_gpio = $db_switch_data['switch_gpio'];
-        ?>
+                <?
+                for ($i = 0; $i < $rows; $i++) {
+                    $db_switch_data = mysql_fetch_assoc($db_switch_result);
+                    $switch_id = $db_switch_data['switch_id'];
+                    $switch_state = $db_switch_data['switch_state'];
+                    $switch_descr = $db_switch_data['switch_descr'];
+                    $switch_gpio = $db_switch_data['switch_gpio'];
+                    $switch_disabled = $db_switch_data['switch_disabled'];
+                    ?>
 
                     <tr align="center">
                         <td rowspan="2"><? echo $i + 1; ?></td>
-                        <td rowspan="2"><img src="images/switch_<? if($switch_descr=="disabled"||$switch_descr=="Disabled") echo 'disabled'; else echo $switch_state; //switch state ?>.png" id="control_switch"></td>
-                        <td id="description" colspan="2"><input id="descriptionfield" type="text" name="description<? echo $i; ?>" value="<? echo $switch_descr; ?>"></td>
+                        <td rowspan="2"><img src="images/switch_<?
+            if ($switch_disabled)
+                echo 'disabled';
+            else
+                echo $switch_state; //switch state  
+                    ?>.png" id="control_switch"></td>
+                        <td id="description" colspan="3"><input id="descriptionfield" type="text" name="description<? echo $i; ?>" value="<? echo $switch_descr; ?>" <?if ($switch_disabled) echo"class=\"disabled\"";?>></td>
+                        <td><input type="checkbox" id="disablebox" name="switch_disabled_<? echo $i; ?>" <?if($switch_disabled==1)echo 'checked';?>></td>
                     </tr>
                     <tr align="center">
-                        <td id="gpio"><input id="gpiofield" type="number" length="2" name="gpio<? echo $i; ?>" value="<? echo $switch_gpio; ?>"></td>
-                        <td id="update"><input type="button" name="<? echo $switch_id; ?>" value="Update" onclick="save_clickHandler(event);"></td>
+                        <td id="gpio">
+                            <select id="gpiofield" name="gpio<? echo $i; ?>">
+                                <?
+                                foreach ([11, 12, 13, 15, 16] as $pin) {
+                                    ?><option label = "<? echo $pin;
+                        if ($pin == $switch_gpio) echo '*'; ?>" value = "<? echo $pin; ?>"<? if ($pin == $switch_gpio) echo 'selected'; ?>><? echo $pin;
+                        if ($pin == $switch_gpio) echo '*'; ?></option><?
+                    }
+                    ?>
+                            </select>
+                        </td>
+                        <td id="update" colspan="2"><input type="button" name="<? echo $switch_id; ?>" value="Update" onclick="save_clickHandler(event);"></td>
                     </tr>
     <? } ?>
                 <tr><td></td><td></td><td><a href="./"><-- Go back</a></td></tr>
-                <tr><td colspan='4' style='text-align: justify; padding: 2%;'>Valid GPIO pins - [11, 12, 13, 15, 16]</td></tr>
-                <tr><td colspan='4' style='text-align: justify; padding: 2%;'>To disable a switch, set description to Disabled</td></tr>
+
             </tbody>
         </table>
     </form>
@@ -150,24 +156,25 @@ if (isset($_POST['pswd_change'])) {
                     <th><label for=e1>S.No.</label></th>
                     <th><label for=e2>Switch</label></th>
                     <th><label for=e3>Description</label></th>
-    <?
-    if ($_SESSION['user_type'] == "admin") {
-        echo '<th><label for=e4>Edit</label></th>';
-    }
-    ?>
+                    <?
+                    if ($_SESSION['user_type'] == "admin") {
+                        echo '<th><label for=e4>Edit</label></th>';
+                    }
+                    ?>
                 </tr>
             </thead>
             <tbody>
-                    <?
-                    for ($i = 0; $i < $rows; $i++) {
-                        $db_switch_data = mysql_fetch_assoc($db_switch_result);
-                        $switch_id = $db_switch_data['switch_id'];
-                        $switch_state = $db_switch_data['switch_state'];
-                        $switch_descr = $db_switch_data['switch_descr'];
-                        ?>
+                <?
+                for ($i = 0; $i < $rows; $i++) {
+                    $db_switch_data = mysql_fetch_assoc($db_switch_result);
+                    $switch_id = $db_switch_data['switch_id'];
+                    $switch_state = $db_switch_data['switch_state'];
+                    $switch_descr = $db_switch_data['switch_descr'];
+                    $switch_disabled = $db_switch_data['switch_disabled'];
+                    ?>
                     <tr align="center">
                         <td><? echo $i + 1; ?></td>
-                        <td><input type="image" name="<? echo $i; ?>" value="Switch <? echo $i; ?>" src="images/switch_<? if($switch_descr=="disabled"||$switch_descr=="Disabled") echo 'disabled'; else echo $switch_state; //switch state ?>.png" id="control_switch" onclick="switch_clickHandler(event);"></td>
+                        <td><input type="image" name="<? echo $i; ?>" value="Switch <? echo $i; ?>" src="images/switch_<?if ($switch_disabled) echo 'disabled'; else echo $switch_state; //switch state?>.png" id="control_switch" onclick="switch_clickHandler(event);" <?if($switch_disabled) echo"disabled";?>></td>
                         <td><? echo "$switch_descr"; //description        ?></td>
         <? if ($_SESSION['user_type'] == "admin") { ?><td><input type="button" name="<? echo $i; ?>" value="Edit" id="control_edit" onclick="edit_clickHandler(event);"></td><? } ?>
                     </tr>
@@ -175,10 +182,10 @@ if (isset($_POST['pswd_change'])) {
             </tbody>
         </table>
     </form>
-                <?
-                mysql_close($con);
-            }
-            ?>
+    <?
+    mysql_close($con);
+}
+?>
 <script>
     function switch_clickHandler(event) {
         document.getElementById('sendertype').value = "switch";
