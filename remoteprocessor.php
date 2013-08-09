@@ -1,8 +1,6 @@
 <?php
 
 include 'config.inc.php';
-$username = "autohomepi_remote"; //Username for OpenRemote
-$password = "c1b06f7ef57e3c009837e9b732bfe4ac"; //Password for OpenRemote
 
 if (isset($_POST['switch_id'])) {
     $switch_id = $_POST['switch_id'];
