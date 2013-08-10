@@ -10,9 +10,9 @@ include 'config.inc.php';
             // Write Switch
             $con = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbname) or die();
             $query = "UPDATE `$dbname`.`switches` SET `switch_state`=\"" . $switch_status . "\" WHERE `switch_id` = '$switch_id'";
-            $result = mysqli_query($con, $query) or die("Failed");
+            $result = mysqli_query($con, $query) or die("on");
             mysqli_close($con);
-            echo $switch_status;
+            echo "1";
         }
     } else if (isset($_GET['switch_id'])) {
         // Read Switch
