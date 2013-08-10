@@ -11,9 +11,9 @@ if (isset($_POST['username']) && isset($_POST['password']) && $_POST['username']
             // Write Switch
             $con = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbname) or die();
             $query = "UPDATE `$autohomepi_db_dbname`.`switches` SET `switch_state`=\"" . $switch_status . "\" WHERE `switch_id` = '$switch_id'";
-            $result = mysqli_query($con, $query) or die();
+            $result = mysqli_query($con, $query) or die("Failed");
             mysqli_close($con);
-            echo $result;
+            echo $switch_status;
         }
     } else if (isset($_GET['switch_id'])) {
         // Read Switch
